@@ -23,6 +23,9 @@ class _HomePageState extends State<HomePage> {
           HabitTile(),
           HabitTile(),
           HabitTile(),
+          HabitTile(),
+          HabitTile(),
+          HabitTile(),
         ],
       ),
     );

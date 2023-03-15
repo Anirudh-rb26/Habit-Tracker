@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HabitTile extends StatelessWidget {
   const HabitTile({super.key});
@@ -12,8 +13,40 @@ class HabitTile extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Habbit'),
+            Row(
+              children: [
+                CircularPercentIndicator(
+                  radius: 30,
+                  percent: 0.7,
+                ),
+
+                const SizedBox(width: 20),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Habit Name
+                    Text(
+                      'Habit',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    // Habit Progress
+                    Text(
+                      '2:00 / 10:00 = 20%',
+                      style: TextStyle(color: Colors.grey),
+                    )
+                  ],
+                ),
+              ],
+            ),
             Icon(Icons.settings),
           ],
         ),
