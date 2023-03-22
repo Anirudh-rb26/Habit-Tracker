@@ -2,7 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HabitTile extends StatelessWidget {
-  const HabitTile({super.key});
+  final String habitName;
+  final VoidCallback playTap;
+  final VoidCallback settingsTap;
+  final int timeSpent;
+  final int timeGoal;
+  final bool habitStarted;
+
+  const HabitTile({
+    super.key,
+    required this.habitName,
+    required this.playTap,
+    required this.settingsTap,
+    required this.timeSpent,
+    required this.timeGoal,
+    required this.habitStarted,
+  });
+
+  String formatToMin(int totalSeconds) {
+    String seconds = (totalSeconds % 60).toString();
+    String minutes = (totalSeconds / 60).toStringAsFixed(5);
+
+    // if seconds is 1 digit, place 0 before the digit
+    if (seconds.length == 1) {
+      seconds = '0' + seconds;
+    }
+
+    // if minutes is 1 digit
+    // minutes = 0.9 then minutes = 0
+    if (minutes[1] == '.') {
+      minutes = minutes.substring(0, 1);
+    }
+
+    return minutes + ':' + seconds;
+  }
+
+  // caclulate progress percentage
+  double percentCompleted() {
+    return (timeSpent / (timeGoal * 60));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +55,34 @@ class HabitTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircularPercentIndicator(
-                  radius: 30,
-                  percent: 0.7,
+                GestureDetector(
+                  onTap: playTap,
+                  child: SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: Stack(
+                      children: [
+                        CircularPercentIndicator(
+                          radius: 30,
+                          percent: percentCompleted() < 1 ? percentCompleted() : 1,
+                          progressColor: percentCompleted() > 0.5 ? (percentCompleted() > 0.75 ? (percentCompleted() > 1 ? Colors.amber : Colors.green) : Colors.orange) : Colors.red,
+                        ),
+                        Center(
+                          child: Icon(
+                              habitStarted ? Icons.pause : Icons.play_arrow),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-
                 const SizedBox(width: 20),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Habit Name
                     Text(
-                      'Habit',
-                      style: TextStyle(
+                      habitName,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
@@ -40,14 +92,17 @@ class HabitTile extends StatelessWidget {
 
                     // Habit Progress
                     Text(
-                      '2:00 / 10:00 = 20%',
+                      formatToMin(timeSpent) + ' / ' + timeGoal.toString() + ' = ' + (percentCompleted()* 100).toStringAsFixed(0) + '%',
                       style: TextStyle(color: Colors.grey),
                     )
                   ],
                 ),
               ],
             ),
-            Icon(Icons.settings),
+            GestureDetector(
+              onTap: settingsTap,
+              child: Icon(Icons.settings),
+            ),
           ],
         ),
       ),
